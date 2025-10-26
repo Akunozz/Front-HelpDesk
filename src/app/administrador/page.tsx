@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CriarProcessoForm } from "@/components/adm/criar-processo";
 
 export default function SuportePage() {
   const [user, setUser] = useState<{ 
@@ -68,6 +69,8 @@ export default function SuportePage() {
             </p>
           </CardContent>
         </Card>
+
+        <CriarProcessoForm />
       </div>
     </div>
   );

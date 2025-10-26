@@ -30,7 +30,7 @@ export function LoginForm() {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
-      const response = await fetch("http://localhost:3000/api/users/login", {
+      const response = await fetch("http://localhost:3000/usuarios/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -43,12 +43,12 @@ export function LoginForm() {
       return response.json();
     },
     onSuccess: (data) => {
-      // Store user data
+      // Store user data from the response structure
       const userData = {
-        id: data.id,
-        nome: data.nome,
-        email: data.email,
-        tipo_usuario: data.tipo_usuario
+        id: data.usuario.id,
+        nome: data.usuario.nome,
+        email: data.usuario.email,
+        tipo_usuario: data.usuario.tipo_usuario
       };
       
       // Store in localStorage
@@ -57,13 +57,13 @@ export function LoginForm() {
       // Store in cookie for middleware
       document.cookie = `user=${JSON.stringify(userData)}; path=/; max-age=86400`; // 24 hours
       
-      toast.success(data.message || "Login realizado!");
+      toast.success(data.mensagem || "Login realizado com sucesso!");
 
       // Redirect based on user type
-      if (data.tipo_usuario === "cliente") {
-        router.push("/cliente");
+      if (data.usuario.tipo_usuario === "comum") {
+        router.push("/comum");
       } else {
-        router.push("/suporte");
+        router.push("/administrador");
       }
     },
     onError: () => {

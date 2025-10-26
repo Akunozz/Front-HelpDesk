@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
 
   // Rotas protegidas
   const isClientRoute = request.nextUrl.pathname.startsWith("/cliente");
-  const isSupportRoute = request.nextUrl.pathname.startsWith("/suporte");
+  const isSupportRoute = request.nextUrl.pathname.startsWith("/comum");
 
   // 1. Verificação de Autenticação
   // Se não houver cookie de usuário, redireciona para a página de login.
@@ -20,14 +20,14 @@ export function middleware(request: NextRequest) {
   try {
     const user = JSON.parse(userCookie);
 
-    // Redireciona 'cliente' se tentar acessar uma rota de 'suporte'
-    if (user.tipo_usuario === "cliente" && isSupportRoute) {
-      return NextResponse.redirect(new URL("/cliente", request.url));
+    // Redireciona 'administrador' se tentar acessar uma rota de 'comum'
+    if (user.tipo_usuario === "administrador" && isSupportRoute) {
+      return NextResponse.redirect(new URL("/administrador", request.url));
     }
 
-    // Redireciona 'suporte' se tentar acessar uma rota de 'cliente'
-    if (user.tipo_usuario === "suporte" && isClientRoute) {
-      return NextResponse.redirect(new URL("/suporte", request.url));
+    // Redireciona 'comum' se tentar acessar uma rota de 'administrador'
+    if (user.tipo_usuario === "comum" && isClientRoute) {
+      return NextResponse.redirect(new URL("/comum", request.url));
     }
   } catch (error) {
     // Se o cookie estiver malformado, redireciona para o login por segurança.
@@ -40,5 +40,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/cliente/:path*", "/suporte/:path*"],
+  matcher: ["/administrador/:path*", "/comum/:path*"],
 };

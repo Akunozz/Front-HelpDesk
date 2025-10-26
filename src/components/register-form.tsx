@@ -15,7 +15,7 @@ const registerSchema = z.object({
   nome: z.string().min(3, "O nome deve ter no mínimo 3 caracteres"),
   email: z.email("Email inválido"),
   senha: z.string().min(4, "A senha deve ter no mínimo 4 caracteres"),
-  tipo_usuario: z.enum(["cliente", "suporte"], {
+  tipo_usuario: z.enum(["administrador", "comum"], {
     error: "Selecione o tipo de usuário",
   }),
 });
@@ -32,7 +32,7 @@ export function RegisterForm() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      tipo_usuario: "cliente",
+      tipo_usuario: "administrador",
     },
   });
 
@@ -40,7 +40,7 @@ export function RegisterForm() {
 
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterFormData) => {
-      const response = await fetch("http://localhost:3000/api/users", {
+      const response = await fetch("http://localhost:3000/usuarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -60,10 +60,10 @@ export function RegisterForm() {
       localStorage.setItem("token", data.token);
 
       setTimeout(() => {
-        if (data.user.type === "cliente") {
-          window.location.href = "/cliente";
+        if (data.user.type === "administrador") {
+          window.location.href = "/administrador";
         } else {
-          window.location.href = "/suporte";
+          window.location.href = "/comum";
         }
       }, 1000);
     },
@@ -122,19 +122,19 @@ export function RegisterForm() {
         <RadioGroup
           value={userType}
           onValueChange={(value) =>
-            setValue("tipo_usuario", value as "cliente" | "suporte")
+            setValue("tipo_usuario", value as "administrador" | "comum")
           }
         >
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="cliente" id="cliente" />
-            <Label htmlFor="cliente" className="font-normal cursor-pointer">
-              Cliente
+            <RadioGroupItem value="administrador" id="administrador" />
+            <Label htmlFor="administrador" className="font-normal cursor-pointer">
+              Administrador
             </Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="suporte" id="suporte" />
-            <Label htmlFor="suporte" className="font-normal cursor-pointer">
-              Suporte
+            <RadioGroupItem value="comum" id="comum" />
+            <Label htmlFor="comum" className="font-normal cursor-pointer">
+              Comum
             </Label>
           </div>
         </RadioGroup>
